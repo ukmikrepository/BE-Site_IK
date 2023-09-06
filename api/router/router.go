@@ -2,13 +2,15 @@ package router
 
 import (
 	"backend_ukmik/api/controller"
+	"backend_ukmik/api/middleware"
+	"backend_ukmik/domain"
 	"net/http"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
-func NewRouter(UserController *controller.UserController, AuthenticationController *controller.AuthenticationController) *gin.Engine {
+func NewRouter(userDomain domain.UserRepository, UserController *controller.UserController, AuthenticationController *controller.AuthenticationController, CAController *controller.CAController) *gin.Engine {
 	service := gin.Default()
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"http://localhost:3000", "http://10.0.26.57:3000", "*"}
@@ -33,6 +35,11 @@ func NewRouter(UserController *controller.UserController, AuthenticationControll
 
 	// test
 	router.POST("/crate_user", UserController.CreateUser)
+
+	// pendaftaran calon anggota
+	router.POST("/ca-register", middleware.DeserializeAdminRole(userDomain), CAController.RegisterCA)
+	router.POST("/ca-update/:id", middleware.DeserializeAdminRole(userDomain), CAController.UpadateCA)
+	router.GET("/ca-list/:offset/:limit", middleware.DeserializeAdminRole(userDomain), CAController.ListCA)
 
 	return service
 }

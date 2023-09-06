@@ -37,3 +37,13 @@ func (r *UserRepository) CreateUser(user model.User) error {
 
 	return nil
 }
+
+// cari user berdasarkan id
+func (r *UserRepository) FindUserById(id int) (model.User, error) {
+	result := model.User{}
+	err := r.db.Table("users").Where("id = ? ", id).Where("deleted_at IS NULL").First(&result).Error
+	if err != nil {
+		return model.User{}, errors.New("id not found")
+	}
+	return result, nil
+}

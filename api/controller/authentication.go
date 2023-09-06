@@ -27,14 +27,16 @@ func (a *AuthenticationController) Login(c *gin.Context) {
 		return
 	}
 
-	// err := a.UserUsecase.CreateUser(user)
-	// if err != nil {
-	// 	c.AbortWithStatusJSON(http.StatusInternalServerError, model.Response{
-	// 		StatusCode: http.StatusInternalServerError,
-	// 		Message:    err.Error(),
-	// 	})
-	// 	return
-	// }
-	// res := model.Response{StatusCode: http.StatusCreated, Message: "Create User Success"}
-	c.JSON(http.StatusCreated, login)
+	token, err := a.AuthenticationUsecase.ValidateUser(login)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, model.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    err.Error(),
+		})
+		return
+	}
+
+	res := model.Response{StatusCode: http.StatusOK, Message: "Login successful"}
+	result := model.ResLogin{Res: res, Token: token}
+	c.JSON(res.StatusCode, result)
 }

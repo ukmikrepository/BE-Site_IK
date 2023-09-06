@@ -1,6 +1,8 @@
 package model
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 type User struct {
 	*gorm.Model
@@ -8,10 +10,10 @@ type User struct {
 	Name     string `gorm:"type:varchar(100);not null"`
 	Username string `gorm:"type:varchar(100);not null"`
 	Password string `gorm:"type:varchar(100);not null"`
-	Role     int    `gorm:"type:integer(10)"`
+	Role     int    `gorm:"type:integer"`
 
-	UpdatedByUser uint `gorm:"type:integer(10);default:null"`
-	DeletedByUser uint `gorm:"type:integer(10);default:null"`
+	UpdatedByUser uint `gorm:"type:integer;default:null"`
+	DeletedByUser uint `gorm:"type:integer;default:null"`
 }
 
 type JSONUser struct {
@@ -19,4 +21,9 @@ type JSONUser struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 	Role     int    `json:"role"`
+}
+
+type ResLogin struct {
+	Res   Response
+	Token string `json:"token"`
 }
