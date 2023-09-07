@@ -4,6 +4,7 @@ import (
 	"backend_ukmik/domain"
 	"backend_ukmik/model"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"strconv"
@@ -38,6 +39,10 @@ func (ca *CAController) RegisterCA(c *gin.Context) {
 
 	key := c.MustGet("currentUserId").(int)
 
+	// file image
+	filename := fmt.Sprintf("%s_%s", clanggota.Nim, file.Filename)
+	clanggota.Img = filename
+
 	err = ca.CAUsecase.RegisterCA(clanggota, key)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, model.Response{
@@ -47,14 +52,13 @@ func (ca *CAController) RegisterCA(c *gin.Context) {
 		return
 	}
 
-	destination := "uploads/image/ca/2023"
+	destination := "uploads/image/ca/2023/"
 	if err := os.MkdirAll(destination, os.ModePerm); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to create upload directory"})
 		return
 	}
 
 	// Generate a unique filename or use the original filename
-	filename := fmt.Sprintf("%s_%s", clanggota.Nim, file.Filename)
 	if err := c.SaveUploadedFile(file, destination+filename); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
 		return
@@ -102,7 +106,7 @@ func (ca *CAController) UpadateCA(c *gin.Context) {
 		return
 	}
 
-	destination := "uploads/image/ca/2023"
+	destination := "uploads/image/ca/2023/"
 	if err := os.MkdirAll(destination, os.ModePerm); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to create upload directory"})
 		return
@@ -162,4 +166,51 @@ func (ca *CAController) ListCA(c *gin.Context) {
 	response := model.Response{StatusCode: http.StatusOK, Message: "Success get list calon anggota"}
 	result := model.ResponseListCA{Response: response, Meta: meta, Data: dataCA}
 	c.JSON(http.StatusOK, result)
+}
+
+func (ca *CAController) DeleteCA(c *gin.Context) {
+	idCAParam := c.Param("id")
+	idCa, err := strconv.Atoi(idCAParam)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, model.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    err.Error(),
+		})
+		return
+	}
+
+	key := c.MustGet("currentUserId").(int)
+
+	err = ca.CAUsecase.DeleteCA(idCa, key)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, model.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    err.Error(),
+		})
+		return
+	}
+
+	result := model.Response{StatusCode: http.StatusOK, Message: "Delete Calon Anggota Success"}
+
+	c.JSON(http.StatusOK, result)
+}
+
+func (ca *CAController) ImageCa(c *gin.Context) {
+	nameImg := c.Param("img")
+
+	file, err := os.Open("uploads/image/ca/2023/" + nameImg)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal membuka gambar"})
+		return
+	}
+	defer file.Close()
+
+	// Mengatur header untuk menunjukkan tipe konten gambar
+	c.Header("Content-Type", "image/jpeg")
+
+	// Menyalin isi file gambar ke respons HTTP
+	_, err = io.Copy(c.Writer, file)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengirim gambar"})
+	}
 }
