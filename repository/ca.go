@@ -60,16 +60,29 @@ func (c *CARepository) DBUpdateCA(clanggota model.CA, idCa int) error {
 
 func (c *CARepository) DBListCA(offset int, limit int) ([]model.ListCA, error) {
 	result := []model.ListCA{}
-	err := c.db.Table("cas").Select("id", "img", "nama", "email", "nim", "jurusan", "angkatan", "no_tlp").Order("cas.created_at ASC").Offset(offset).Limit(limit).Find(&result).Error
+	err := c.db.Table("cas").Select("id", "img", "nama", "email", "nim", "jurusan", "angkatan", "no_tlp").Where("deleted_at IS NULL").Order("cas.created_at ASC").Offset(offset).Limit(limit).Find(&result).Error
 	if err != nil {
 		return []model.ListCA{}, err
 	}
 	return result, nil
 }
 
+func (c *CARepository) DBDeleteCA(idCa, key int) error {
+	org := model.CA{}
+	err1 := c.db.Where("id = ?", idCa).Where("deleted_at IS NULL").First(&org).Error
+	if errors.Is(err1, gorm.ErrRecordNotFound) {
+		return errors.New("id unit not found")
+	}
+	err := c.db.Model(&model.CA{}).Where("id = ?", idCa).Updates(model.CA{DeletedByUserID: uint(key)}).Error
+	if err != nil {
+		return errors.New("failed to update organization deleted by user")
+	}
+	return c.db.Where("id =?", idCa).Delete(&model.CA{}).Error
+}
+
 func (c *CARepository) DBTotalCa() (int64, error) {
 	var result int64
-	err := c.db.Table("cas").Count(&result).Error
+	err := c.db.Table("cas").Where("deleted_at IS NULL").Count(&result).Error
 	if err != nil {
 		return result, err
 	}

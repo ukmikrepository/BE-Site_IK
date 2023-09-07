@@ -38,8 +38,10 @@ func NewRouter(userDomain domain.UserRepository, UserController *controller.User
 
 	// pendaftaran calon anggota
 	router.POST("/ca-register", middleware.DeserializeAdminRole(userDomain), CAController.RegisterCA)
-	router.POST("/ca-update/:id", middleware.DeserializeAdminRole(userDomain), CAController.UpadateCA)
+	router.PUT("/ca-update/:id", middleware.DeserializeAdminRole(userDomain), CAController.UpadateCA)
 	router.GET("/ca-list/:offset/:limit", middleware.DeserializeAdminRole(userDomain), CAController.ListCA)
+	router.DELETE("/ca-delete/:id", middleware.DeserializeAdminRole(userDomain), CAController.DeleteCA)
+	router.GET("/ca-image/:img", middleware.DeserializeAdminRole(userDomain), CAController.ImageCa)
 
 	return service
 }
