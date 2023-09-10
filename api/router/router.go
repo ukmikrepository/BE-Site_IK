@@ -4,7 +4,6 @@ import (
 	"backend_ukmik/api/controller"
 	"backend_ukmik/api/middleware"
 	"backend_ukmik/domain"
-	"net/http"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -20,13 +19,13 @@ func NewRouter(userDomain domain.UserRepository, UserController *controller.User
 
 	service.Use(cors.New(config))
 
-	service.GET("", func(context *gin.Context) {
-		context.JSON(http.StatusOK, "welcome home")
-	})
+	// service.GET("", func(context *gin.Context) {
+	// 	context.JSON(http.StatusOK, "welcome home")
+	// })
 
-	service.NoRoute(func(c *gin.Context) {
-		c.JSON(404, gin.H{"code": "PAGE_NOT_FOUND", "message": "Page not found"})
-	})
+	// service.NoRoute(func(c *gin.Context) {
+	// 	c.JSON(404, gin.H{"code": "PAGE_NOT_FOUND", "message": "Page not found"})
+	// })
 
 	router := service.Group("/api")
 
@@ -34,13 +33,13 @@ func NewRouter(userDomain domain.UserRepository, UserController *controller.User
 	router.POST("/login", AuthenticationController.Login)
 
 	// test
-	router.POST("/crate_user", UserController.CreateUser)
+	router.POST("/user", UserController.CreateUser)
 
 	// pendaftaran calon anggota
-	router.POST("/ca-register", middleware.DeserializeAdminRole(userDomain), CAController.RegisterCA)
-	router.PUT("/ca-update/:id", middleware.DeserializeAdminRole(userDomain), CAController.UpadateCA)
-	router.GET("/ca-list/:offset/:limit", middleware.DeserializeAdminRole(userDomain), CAController.ListCA)
-	router.DELETE("/ca-delete/:id", middleware.DeserializeAdminRole(userDomain), CAController.DeleteCA)
+	router.POST("/ca", middleware.DeserializeAdminRole(userDomain), CAController.RegisterCA)
+	router.PUT("/ca/:id", middleware.DeserializeAdminRole(userDomain), CAController.UpadateCA)
+	router.GET("/ca/:offset/:limit", middleware.DeserializeAdminRole(userDomain), CAController.ListCA)
+	router.DELETE("/ca/:id", middleware.DeserializeAdminRole(userDomain), CAController.DeleteCA)
 	router.GET("/ca-image/:img", middleware.DeserializeAdminRole(userDomain), CAController.ImageCa)
 
 	return service

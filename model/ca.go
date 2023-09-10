@@ -4,15 +4,15 @@ import "gorm.io/gorm"
 
 type CA struct {
 	*gorm.Model
-	ID       int `gorm:"primaryKey"`
-	Nama     string
-	Email    string
+	ID       int    `gorm:"primaryKey"`
+	Nama     string `gorm:"type:varchar(50)"`
+	Email    string `gorm:"type:varchar(50)"`
 	Img      string
-	Nim      string
+	Nim      string `gorm:"type:varchar(11)"`
 	Fakultas int
 	Jurusan  int
-	Angkatan string
-	NoTlp    string
+	Angkatan string `gorm:"type:varchar(5)"`
+	NoTlp    string `gorm:"type:varchar(15)"`
 	JKelamin int
 
 	CreatedByUserID uint

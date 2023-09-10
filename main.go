@@ -48,7 +48,7 @@ func startServer(db *gorm.DB) {
 	routes := router.NewRouter(UserRepo, UserController, AuthenticationController, CAController)
 
 	server := &http.Server{
-		Addr:           ":8080",
+		Addr:           ":3400",
 		Handler:        routes,
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,

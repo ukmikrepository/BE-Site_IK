@@ -10,7 +10,7 @@ import (
 )
 
 func ConnectionDB(config *config.ConfigEnv) *gorm.DB {
-	dsn := fmt.Sprintf("%s:%s@tcp(127.0.0.1:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local", config.DBUsername, config.DBPassword, config.DBName)
+	dsn := fmt.Sprintf("%s:%s@tcp(172.17.89.200:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local", config.DBUsername, config.DBPassword, config.DBName)
 
 	// dsn := fmt.Sprintf("host=%s user=%s password=%s port=3306 dbname=%s sslmode=disable", config.DBHost, config.DBUsername, config.DBPassword, config.DBName)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
