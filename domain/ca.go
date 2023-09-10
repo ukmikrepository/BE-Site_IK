@@ -8,6 +8,7 @@ type CARepository interface {
 	DBListCA(offset int, limit int) ([]model.ListCA, error)
 	DBTotalCa() (int64, error)
 	DBDeleteCA(idCa, key int) error
+	DBValidateID(int) error
 }
 
 type CAUsecase interface {
@@ -16,4 +17,5 @@ type CAUsecase interface {
 	ListCA(offset int, limit int) ([]model.ListCA, error)
 	TotalCa() (int64, error)
 	DeleteCA(idCa, key int) error
+	ValidateID(int) error
 }

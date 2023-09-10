@@ -4,6 +4,7 @@ import (
 	"backend_ukmik/domain"
 	"backend_ukmik/model"
 	"errors"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -75,7 +76,7 @@ func (c *CARepository) DBDeleteCA(idCa, key int) error {
 	}
 	err := c.db.Model(&model.CA{}).Where("id = ?", idCa).Updates(model.CA{DeletedByUserID: uint(key)}).Error
 	if err != nil {
-		return errors.New("failed to update organization deleted by user")
+		return errors.New("failed to update ca deleted by user")
 	}
 	return c.db.Where("id =?", idCa).Delete(&model.CA{}).Error
 }
@@ -87,4 +88,16 @@ func (c *CARepository) DBTotalCa() (int64, error) {
 		return result, err
 	}
 	return result, nil
+}
+
+func (c *CARepository) DBValidateID(key int) error {
+	var count int64
+	if err := c.db.Table("cas").Where("id = ?", key).Count(&count).Error; err != nil {
+		return err
+	}
+
+	if count == 0 {
+		return fmt.Errorf("ID tidak ditemukan") // Menghasilkan error jika ID tidak ditemukan
+	}
+	return nil
 }

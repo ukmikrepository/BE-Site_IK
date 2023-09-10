@@ -31,6 +31,36 @@ func (ca *CAController) RegisterCA(c *gin.Context) {
 		return
 	}
 
+	if len(clanggota.Nama) >= 50 || len(clanggota.Email) >= 50 || len(clanggota.Nim) >= 11 || clanggota.Jurusan >= 9 || len(clanggota.Angkatan) >= 5 || len(clanggota.NoTlp) >= 15 || clanggota.Fakultas >= 3 || clanggota.JKelamin >= 3 {
+		var errorMessage string
+
+		if len(clanggota.Nama) >= 50 {
+			errorMessage = "Nama tidak boleh lebih dari 50 karakter"
+		} else if len(clanggota.Email) >= 50 {
+			errorMessage = "Email tidak boleh lebih dari 50 karakter"
+		} else if len(clanggota.Nim) >= 11 {
+			errorMessage = "Nim tidak boleh lebih dari 11 karakter"
+		} else if clanggota.Jurusan >= 9 {
+			errorMessage = "Jurusan tidak boleh lebih dari 9"
+		} else if len(clanggota.Angkatan) >= 5 {
+			errorMessage = "Angkatan tidak boleh lebih dari 5 karakter"
+		} else if len(clanggota.NoTlp) >= 15 {
+			errorMessage = "Nomor Telepon tidak boleh lebih dari 15 karakter"
+		} else if clanggota.Fakultas >= 3 {
+			errorMessage = "Fakultas tidak boleh lebih dari 3"
+		} else if clanggota.JKelamin >= 3 {
+			errorMessage = "Jenis Kelamin tidak boleh lebih dari 3"
+		} else {
+			errorMessage = ""
+		}
+
+		c.AbortWithStatusJSON(http.StatusBadRequest, model.Response{
+			StatusCode: http.StatusBadRequest,
+			Message:    errorMessage,
+		})
+		return
+	}
+
 	file, err := c.FormFile("image")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Image upload is required"})
@@ -79,6 +109,36 @@ func (ca *CAController) UpadateCA(c *gin.Context) {
 		return
 	}
 
+	if len(clanggota.Nama) >= 50 || len(clanggota.Email) >= 50 || len(clanggota.Nim) >= 11 || clanggota.Jurusan >= 9 || len(clanggota.Angkatan) >= 5 || len(clanggota.NoTlp) >= 15 || clanggota.Fakultas >= 3 || clanggota.JKelamin >= 3 {
+		var errorMessage string
+
+		if len(clanggota.Nama) >= 50 {
+			errorMessage = "Nama tidak boleh lebih dari 50 karakter"
+		} else if len(clanggota.Email) >= 50 {
+			errorMessage = "Email tidak boleh lebih dari 50 karakter"
+		} else if len(clanggota.Nim) >= 11 {
+			errorMessage = "Nim tidak boleh lebih dari 11 karakter"
+		} else if clanggota.Jurusan >= 9 {
+			errorMessage = "Jurusan tidak boleh lebih dari 9"
+		} else if len(clanggota.Angkatan) >= 5 {
+			errorMessage = "Angkatan tidak boleh lebih dari 5 karakter"
+		} else if len(clanggota.NoTlp) >= 15 {
+			errorMessage = "Nomor Telepon tidak boleh lebih dari 15 karakter"
+		} else if clanggota.Fakultas >= 3 {
+			errorMessage = "Fakultas tidak boleh lebih dari 3"
+		} else if clanggota.JKelamin >= 3 {
+			errorMessage = "Jenis Kelamin tidak boleh lebih dari 3"
+		} else {
+			errorMessage = ""
+		}
+
+		c.AbortWithStatusJSON(http.StatusBadRequest, model.Response{
+			StatusCode: http.StatusBadRequest,
+			Message:    errorMessage,
+		})
+		return
+	}
+
 	file, err := c.FormFile("image")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Image upload is required"})
@@ -96,6 +156,15 @@ func (ca *CAController) UpadateCA(c *gin.Context) {
 	}
 
 	key := c.MustGet("currentUserId").(int)
+
+	err = ca.CAUsecase.ValidateID(key)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, model.Response{
+			StatusCode: http.StatusNotFound,
+			Message:    "Page Not Found",
+		})
+		return
+	}
 
 	err = ca.CAUsecase.UpdateCA(clanggota, idCa, key)
 	if err != nil {
@@ -181,6 +250,15 @@ func (ca *CAController) DeleteCA(c *gin.Context) {
 
 	key := c.MustGet("currentUserId").(int)
 
+	err = ca.CAUsecase.ValidateID(key)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, model.Response{
+			StatusCode: http.StatusNotFound,
+			Message:    "Page Not Found",
+		})
+		return
+	}
+
 	err = ca.CAUsecase.DeleteCA(idCa, key)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, model.Response{
@@ -211,6 +289,10 @@ func (ca *CAController) ImageCa(c *gin.Context) {
 	// Menyalin isi file gambar ke respons HTTP
 	_, err = io.Copy(c.Writer, file)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengirim gambar"})
+		c.AbortWithStatusJSON(http.StatusBadRequest, model.Response{
+			StatusCode: http.StatusNotFound,
+			Message:    "Page not found",
+		})
+		return
 	}
 }

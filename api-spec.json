@@ -1,0 +1,1005 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "API Specification Unit Kegiatan Mahasiswa Informatika & Komputer",
+      "version": "1",
+      "description": "Fitur Calon Anggota"
+    },
+    "paths": {
+      "/login" : {
+        "post": {
+          "security": [],
+          "tags": ["Authorize Management"],
+          "summary": "Login",
+          "description": "All Role",
+          "requestBody": {
+          "description": "Data formulir calon anggota",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              },
+              "examples": {
+                "request_body": {
+                  "value": {
+                    "username": "admin",
+                    "password": "admin"
+                  }
+                }
+              }
+            }
+          }
+          
+          
+        },
+          "responses": {
+            "200": {
+              "description": "Success login Success",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Success": {
+                      "value": {
+                        "Res": {
+                            "status_code": 200,
+                            "message": "Login successful"
+                        },
+                        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTQ0MjE0NzgsImlhdCI6MTY5NDMzNTA3OCwibmJmIjoxNjk0MzM1MDc4LCJzdWIiOjF9.XNc3bQ7QmPHGCUWslT0ZQkihe_jRBA8a31kSsf1QQGc"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad Request",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Bad Request": {
+                      "value": {
+                        "status_code": 400,
+                        "message": "field json is invalid"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error Server",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Directory image not faound": {
+                      "value": {
+                        "status_code": 500,
+                        "message": "username and password are not valid"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/user" : {
+        "post": {
+          "security": [],
+          "tags": ["User Management"],
+          "summary": "Login",
+          "description": "All Role",
+          "requestBody": {
+          "description": "Data formulir calon anggota",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "username": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              },
+              "examples": {
+                "request_body": {
+                  "value": {
+                    "name" : "admin",
+                    "username" : "admin",
+                    "password" : "admin"
+                }
+                }
+              }
+            }
+          }
+        },
+          "responses": {
+            "200": {
+              "description": "Create User Success",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Success": {
+                      "value": {
+                          "status_code": 200,
+                          "message": "Create User Success"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad Request",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Bad Request": {
+                      "value": {
+                        "status_code": 400,
+                        "message": "field json is invalid"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error Server",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "duplicate": {
+                      "value": {
+                        "status_code": 500,
+                        "message": "username is already exist"
+                      }
+                    },
+                    "server error": {
+                      "value": {
+                        "status_code": 500,
+                        "message": "failed to create user"
+                      }
+                    },
+                    "error mencari data user": {
+                      "value": {
+                        "status_code": 500,
+                        "message": "error occurred while searching for user"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/ca": {
+        "post": {
+          "security": [],
+          "tags": ["Calon Anggota Management"],
+          "summary": "Registrasi Calon Anggota",
+          "description": "Role User",
+          "requestBody": {
+          "description": "Data formulir calon anggota",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nama": {
+                    "type": "string",
+                    "maxLength": 50
+                  },
+                  "email": {
+                    "type": "string",
+                    "maxLength": 50
+                  },
+                  "nim": {
+                    "type": "string",
+                    "maxLength": 11
+                  },
+                  "jurusan": {
+                    "type": "integer",
+                    "maxLength": 9
+                  },
+                  "angkatan": {
+                    "type": "string",
+                    "maxLength": 5
+                  },
+                  "no_telp": {
+                    "type": "string",
+                    "maxLength": 15
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "fakultas": {
+                    "type": "integer",
+                    "maxLength": 3,
+                    "enum": [0, 1]
+
+                  },
+                  "j_kelamin": {
+                    "type": "integer",
+                    "maxLength": 2,
+                    "enum": [0, 1]
+                  }
+                },
+                "required": ["nama", "email", "nim", "jurusan", "angkatan", "no_telp", "image", "fakultas", "j_kelamin"]
+              },
+              "examples": {
+                "example1": {
+                  "value": {
+                    "nama": "John Doe",
+                    "email": "johndoe@example.com",
+                    "nim": "12345",
+                    "jurusan": 1,
+                    "angkatan": "2023",
+                    "no_telp": "1234567890",
+                    "image": "sample.jpg",
+                    "fakultas": 1,
+                    "j_kelamin": 0
+                  }
+                }
+              }
+            }
+          }
+          
+        },
+          "responses": {
+            "201": {
+              "description": "Success create user",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Success": {
+                      "value": {
+                        "status_code": 201,
+                        "message": "Create Calon Anggota Success"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad Request",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Bad Request": {
+                      "value": {
+                        "status_code": 400,
+                        "message": "field is invalid"
+                      }
+                    },
+                    "Lenght Field Nama": {
+                      "value": {
+                        "status_code": 400,
+                        "message": "Nama tidak boleh lebih dari 50 karakter"
+                      }
+                    },
+                    "Lenght Field Email": {
+                      "value": {
+                        "status_code": 400,
+                        "message": "Email tidak boleh lebih dari 50 karakter"
+                      }
+                    },
+                    "Lenght Field Nim": {
+                      "value": {
+                        "status_code": 400,
+                        "message": "Nama tidak boleh lebih dari 11 karakter"
+                      }
+                    },
+                    "Lenght Field Jurusan": {
+                      "value": {
+                        "status_code": 400,
+                        "message": "Jurusan tidak boleh lebih dari 9"
+                      }
+                    },
+                    "Lenght Field Angkatan": {
+                      "value": {
+                        "status_code": 400,
+                        "message": "Angkatan tidak boleh lebih dari 50 karakter"
+                      }
+                    },
+                    "Lenght Field Nomor Telpon": {
+                      "value": {
+                        "status_code": 400,
+                        "message": "Nomor Telepon tidak boleh lebih dari 50 karakter"
+                      }
+                    },
+                    "Lenght Field Fakultas": {
+                      "value": {
+                        "status_code": 400,
+                        "message": "Nama tidak boleh lebih dari 3"
+                      }
+                    },
+                    "Lenght Field Jenis Kelamin": {
+                      "value": {
+                        "status_code": 400,
+                        "message": "Jenis Kelamin tidak boleh lebih dari 50 karakter"
+                      }
+                    },
+                    "Lenght Field Image": {
+                      "value": {
+                        "status_code": 400,
+                        "message": "Image upload is required"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "UnAuthorize, token invalid",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Tidak ada Token": {
+                      "value": {
+                        "status_code": 401,
+                        "message": "You are not logged in"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Forbidden",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "UnAuthorize": {
+                      "value": {
+                        "status_code": 403,
+                        "message": "User is not admin, cannot access the api"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error Server",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Directory image not faound": {
+                      "value": {
+                        "status_code": 500,
+                        "message": "Unable to create upload directory"
+                      }
+                    },
+                    "Save image to Server": {
+                      "value": {
+                        "status_code": 500,
+                        "message": "Failed to save file"
+                      }
+                    },
+                    "Duplicate": {
+                      "value": {
+                        "status_code": 500,
+                        "message": "nim is already exist"
+                      }
+                    },
+                    "Failed Save to server": {
+                      "value": {
+                        "status_code": 500,
+                        "message": "nim is already exist"
+                      }
+                    },
+                    "Validasi Server": {
+                      "value": {
+                        "status_code": 500,
+                        "message": "error occurred while searching for calon anggota"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/ca/:id":{
+        "put": {
+          "security": [],
+          "tags": ["Calon Anggota Management"],
+          "summary": "Update Calon Anggota",
+          "description": "Role Admin",
+          "parameters": [
+            {
+              "name": "Bearrer Token",
+              "in": "header",
+              "required": true,
+              "description": "Need bearrer token"
+            },
+            {
+              "name": "id",
+              "in": "header",
+              "required": true,
+              "description": "id user"
+            }
+          ],
+          "requestBody": {
+          "description": "Data formulir calon anggota",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nama": {
+                    "type": "string",
+                    "maxLength": 50
+                  },
+                  "email": {
+                    "type": "string",
+                    "maxLength": 50
+                  },
+                  "nim": {
+                    "type": "string",
+                    "maxLength": 11
+                  },
+                  "jurusan": {
+                    "type": "integer",
+                    "maxLength": 9
+                  },
+                  "angkatan": {
+                    "type": "string",
+                    "maxLength": 5
+                  },
+                  "no_telp": {
+                    "type": "string",
+                    "maxLength": 15
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "fakultas": {
+                    "type": "integer",
+                    "maxLength": 3,
+                    "enum": [0, 1]
+
+                  },
+                  "j_kelamin": {
+                    "type": "integer",
+                    "maxLength": 2,
+                    "enum": [0, 1]
+                  }
+                },
+                "required": ["nama", "email", "nim", "jurusan", "angkatan", "no_telp", "image", "fakultas", "j_kelamin"]
+              },
+              "examples": {
+                "example1": {
+                  "value": {
+                    "nama": "John Doe",
+                    "email": "johndoe@example.com",
+                    "nim": "12345",
+                    "jurusan": 1,
+                    "angkatan": "2023",
+                    "no_telp": "1234567890",
+                    "image": "sample.jpg",
+                    "fakultas": 1,
+                    "j_kelamin": 0
+                  }
+                }
+              }
+            }
+          }
+          },
+          "responses": {
+            "200": {
+              "description": "Success Update CA",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Success": {
+                      "value": {
+                        "status_code": 200,
+                        "message": "Update Calon Anggota Success"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad Request",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Bad Request": {
+                      "value": {
+                        "status_code": 400,
+                        "message": "field is invalid"
+                      }
+                    },
+                    "Lenght Field Nama": {
+                      "value": {
+                        "status_code": 400,
+                        "message": "Nama tidak boleh lebih dari 50 karakter"
+                      }
+                    },
+                    "Lenght Field Email": {
+                      "value": {
+                        "status_code": 400,
+                        "message": "Email tidak boleh lebih dari 50 karakter"
+                      }
+                    },
+                    "Lenght Field Nim": {
+                      "value": {
+                        "status_code": 400,
+                        "message": "Nama tidak boleh lebih dari 11 karakter"
+                      }
+                    },
+                    "Lenght Field Jurusan": {
+                      "value": {
+                        "status_code": 400,
+                        "message": "Jurusan tidak boleh lebih dari 9"
+                      }
+                    },
+                    "Lenght Field Angkatan": {
+                      "value": {
+                        "status_code": 400,
+                        "message": "Angkatan tidak boleh lebih dari 50 karakter"
+                      }
+                    },
+                    "Lenght Field Nomor Telpon": {
+                      "value": {
+                        "status_code": 400,
+                        "message": "Nomor Telepon tidak boleh lebih dari 50 karakter"
+                      }
+                    },
+                    "Lenght Field Fakultas": {
+                      "value": {
+                        "status_code": 400,
+                        "message": "Nama tidak boleh lebih dari 3"
+                      }
+                    },
+                    "Lenght Field Jenis Kelamin": {
+                      "value": {
+                        "status_code": 400,
+                        "message": "Jenis Kelamin tidak boleh lebih dari 50 karakter"
+                      }
+                    },
+                    "Lenght Field Image": {
+                      "value": {
+                        "status_code": 400,
+                        "message": "Image upload is required"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "UnAuthorize, token invalid",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Tidak ada Token": {
+                      "value": {
+                        "status_code": 401,
+                        "message": "You are not logged in"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Forbidden",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "UnAuthorize": {
+                      "value": {
+                        "status_code": 403,
+                        "message": "User is not admin, cannot access the api"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Page Not Found",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Page Not Found": {
+                      "value": {
+                        "status_code": 404,
+                        "message": "Page Not Found"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error Server",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Directory image not faound": {
+                      "value": {
+                        "status_code": 500,
+                        "message": "Unable to create upload directory"
+                      }
+                    },
+                    "Save image to Server": {
+                      "value": {
+                        "status_code": 500,
+                        "message": "Failed to save file"
+                      }
+                    },
+                    "Duplicate": {
+                      "value": {
+                        "status_code": 500,
+                        "message": "nim is already exist"
+                      }
+                    },
+                    "Failed Save to server": {
+                      "value": {
+                        "status_code": 500,
+                        "message": "nim is already exist"
+                      }
+                    },
+                    "Validasi Server": {
+                      "value": {
+                        "status_code": 500,
+                        "message": "error occurred while searching for calon anggota"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "delete": {
+          "security": [],
+          "tags": ["Calon Anggota Management"],
+          "summary": "Delete Calon Anggota",
+          "description": "Role Admin",
+          "parameters": [
+            {
+              "name": "Bearrer Token",
+              "in": "header",
+              "required": true,
+              "description": "Need bearrer token"
+            },
+            {
+              "name": "id",
+              "in": "header",
+              "required": true,
+              "description": "id user"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success Delete CA",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Success": {
+                      "value": {
+                        "status_code": 200,
+                        "message": "Delete Calon Anggota Success"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "UnAuthorize, token invalid",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Tidak ada Token": {
+                      "value": {
+                        "status_code": 401,
+                        "message": "You are not logged in"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Forbidden",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "UnAuthorize": {
+                      "value": {
+                        "status_code": 403,
+                        "message": "User is not admin, cannot access the api"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Page Not Found",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Page Not Found": {
+                      "value": {
+                        "status_code": 404,
+                        "message": "Page Not Found"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error Server",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Error Server": {
+                      "value": {
+                        "status_code": 500,
+                        "message": "failed to update ca deleted by user"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/ca/:page/:limit" : {
+        "get": {
+          "security": [],
+          "tags": ["Calon Anggota Management"],
+          "summary": "Delete Calon Anggota",
+          "description": "Role Admin",
+          "parameters": [
+            {
+              "name": "Bearrer Token",
+              "in": "header",
+              "required": true,
+              "description": "Need bearrer token"
+            },
+            {
+              "name": "id",
+              "in": "header",
+              "required": true,
+              "description": "id user"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success Delete CA",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Success": {
+                      "value": {
+                        "Response": {
+                            "status_code": 200,
+                            "message": "Success get list calon anggota"
+                        },
+                        "Meta": {
+                            "offset": 1,
+                            "limit": 2,
+                            "total": 1
+                        },
+                        "Data": [
+                            {
+                                "No": 1,
+                                "Img": "2054100501_logo.png",
+                                "Nama": "yusseno",
+                                "Email": "yusseno@gmail.com",
+                                "Nim": "2054100501",
+                                "Jurusan": 1,
+                                "Angkatan": "2020",
+                                "NoTlp": "082240600997"
+                            }
+                        ]
+                     }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "UnAuthorize, token invalid",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Tidak ada Token": {
+                      "value": {
+                        "status_code": 401,
+                        "message": "You are not logged in"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Forbidden",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "UnAuthorize": {
+                      "value": {
+                        "status_code": 403,
+                        "message": "User is not admin, cannot access the api"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Page Not Found",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Page Not Found": {
+                      "value": {
+                        "status_code": 404,
+                        "message": "Page Not Found"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error Server",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Error Server": {
+                      "value": {
+                        "status_code": 500,
+                        "message": "Internal Server Error"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/ca-iamge/:img" :{
+        "get": {
+          "security": [],
+          "tags": ["Calon Anggota Management"],
+          "summary": "Menampilkan Image Calon Anggota",
+          "description": "Role Admin",
+          "parameters": [
+            {
+              "name": "Bearrer Token",
+              "in": "header",
+              "required": true,
+              "description": "Need bearrer token"
+            },
+            {
+              "name": "id",
+              "in": "header",
+              "required": true,
+              "description": "id user"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success Delete CA",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Success": {
+                      "value": {
+                        "Response": {
+                            "status_code": 200,
+                            "message": "Success get list calon anggota"
+                        },
+                        "Meta": {
+                            "offset": 1,
+                            "limit": 2,
+                            "total": 1
+                        },
+                        "Data": [
+                            {
+                                "No": 1,
+                                "Img": "2054100501_logo.png",
+                                "Nama": "yusseno",
+                                "Email": "yusseno@gmail.com",
+                                "Nim": "2054100501",
+                                "Jurusan": 1,
+                                "Angkatan": "2020",
+                                "NoTlp": "082240600997"
+                            }
+                        ]
+                     }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "UnAuthorize, token invalid",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Tidak ada Token": {
+                      "value": {
+                        "status_code": 401,
+                        "message": "You are not logged in"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Forbidden",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "UnAuthorize": {
+                      "value": {
+                        "status_code": 403,
+                        "message": "User is not admin, cannot access the api"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Page Not Found",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Page Not Found": {
+                      "value": {
+                        "status_code": 404,
+                        "message": "Page Not Found"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+}

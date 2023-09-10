@@ -86,3 +86,11 @@ func (c *CAUsecase) TotalCa() (int64, error) {
 	}
 	return total, nil
 }
+
+func (c *CAUsecase) ValidateID(key int) error {
+	err := c.CARepository.DBValidateID(key)
+	if err != nil {
+		return err
+	}
+	return nil
+}
