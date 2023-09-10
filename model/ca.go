@@ -1,6 +1,8 @@
 package model
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 type CA struct {
 	*gorm.Model
@@ -37,6 +39,7 @@ type RegCA struct {
 
 type ListCA struct {
 	No       int    `json:"no"`
+	Id       int    `json:"id"`
 	Img      string `json:"image"`
 	Nama     string `json:"nama"`
 	Email    string `json:"email"`
