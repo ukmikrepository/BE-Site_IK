@@ -61,13 +61,47 @@ func (ca *CAController) RegisterCA(c *gin.Context) {
 		return
 	}
 
-	file, err := c.FormFile("image")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Image upload is required"})
+	if (len(clanggota.Nama) == 0 || clanggota.Nama == "" || clanggota.Nama == " ") || (len(clanggota.Email) == 0 || clanggota.Email == "" || clanggota.Email == " ") || (len(clanggota.Nim) == 0 || clanggota.Nama == "" || clanggota.Nim == " ") || clanggota.Jurusan == 0 || (len(clanggota.Angkatan) == 0 || clanggota.Angkatan == "" || clanggota.Angkatan == " ") || (len(clanggota.NoTlp) == 0 || clanggota.NoTlp == "" || clanggota.NoTlp == " ") || clanggota.Fakultas == 0 || clanggota.JKelamin == 0 {
+		var errorMessage string
+
+		if len(clanggota.Nama) == 0 || clanggota.Nama == "" || clanggota.Nama == " " {
+			errorMessage = "Nama tidak boleh kosong"
+		} else if len(clanggota.Email) == 0 || clanggota.Email == "" || clanggota.Email == " " {
+			errorMessage = "Email tidak boleh kosong"
+		} else if len(clanggota.Nim) == 0 || clanggota.Nim == "" || clanggota.Nim == " " {
+			errorMessage = "Nim tidak boleh kosong"
+		} else if clanggota.Jurusan == 0 {
+			errorMessage = "Jurusan tidak boleh kosong"
+		} else if len(clanggota.Angkatan) == 0 || clanggota.Angkatan == "" || clanggota.Angkatan == " " {
+			errorMessage = "Angkatan tidak boleh kosong"
+		} else if len(clanggota.NoTlp) == 0 || clanggota.NoTlp == "" || clanggota.NoTlp == " " {
+			errorMessage = "Nomor Telepon tidak kosong"
+		} else if clanggota.Fakultas == 0 {
+			errorMessage = "Fakultas tidak boleh kosong"
+		} else if clanggota.JKelamin == 0 {
+			errorMessage = "Jenis Kelamin tidak boleh kosong"
+		} else {
+			errorMessage = ""
+		}
+
+		c.AbortWithStatusJSON(http.StatusBadRequest, model.Response{
+			StatusCode: http.StatusBadRequest,
+			Message:    errorMessage,
+		})
 		return
 	}
 
-	key := c.MustGet("currentUserId").(int)
+	file, err := c.FormFile("image")
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, model.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    "Image upload is required",
+		})
+		return
+	}
+
+	// key := c.MustGet("currentUserId").(int)
+	key := 1
 
 	// file image
 	number := ca.CAUsecase.GenerateID()
@@ -140,9 +174,42 @@ func (ca *CAController) UpadateCA(c *gin.Context) {
 		return
 	}
 
+	if len(clanggota.Nama) == 0 || len(clanggota.Email) == 0 || len(clanggota.Nim) == 0 || clanggota.Jurusan == 0 || len(clanggota.Angkatan) == 0 || len(clanggota.NoTlp) == 0 || clanggota.Fakultas == 0 || clanggota.JKelamin == 0 {
+		var errorMessage string
+
+		if len(clanggota.Nama) == 0 {
+			errorMessage = "Nama tidak boleh kosong"
+		} else if len(clanggota.Email) == 0 {
+			errorMessage = "Email tidak boleh kosong"
+		} else if len(clanggota.Nim) == 0 {
+			errorMessage = "Nim tidak boleh kosong"
+		} else if clanggota.Jurusan == 0 {
+			errorMessage = "Jurusan tidak boleh kosong"
+		} else if len(clanggota.Angkatan) == 0 {
+			errorMessage = "Angkatan tidak boleh kosong"
+		} else if len(clanggota.NoTlp) == 0 {
+			errorMessage = "Nomor Telepon tidak kosong"
+		} else if clanggota.Fakultas == 0 {
+			errorMessage = "Fakultas tidak boleh kosong"
+		} else if clanggota.JKelamin == 0 {
+			errorMessage = "Jenis Kelamin tidak boleh kosong"
+		} else {
+			errorMessage = ""
+		}
+
+		c.AbortWithStatusJSON(http.StatusBadRequest, model.Response{
+			StatusCode: http.StatusBadRequest,
+			Message:    errorMessage,
+		})
+		return
+	}
+
 	file, err := c.FormFile("image")
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Image upload is required"})
+		c.AbortWithStatusJSON(http.StatusInternalServerError, model.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    "Image upload is required",
+		})
 		return
 	}
 
@@ -156,7 +223,8 @@ func (ca *CAController) UpadateCA(c *gin.Context) {
 		return
 	}
 
-	key := c.MustGet("currentUserId").(int)
+	// key := c.MustGet("currentUserId").(int)
+	key := 1
 
 	err = ca.CAUsecase.ValidateID(key)
 	if err != nil {

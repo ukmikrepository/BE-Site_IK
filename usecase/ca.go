@@ -21,17 +21,6 @@ func NewCAUsecase(CARepository domain.CARepository) domain.CAUsecase {
 
 func (c *CAUsecase) RegisterCA(clanggota model.RegCA, key int) error {
 	calonAnggota := model.CA{Nama: clanggota.Nama, Email: clanggota.Email, Nim: clanggota.Nim, Jurusan: clanggota.Jurusan, Angkatan: clanggota.Angkatan, NoTlp: clanggota.NoTlp, Fakultas: clanggota.Fakultas, JKelamin: clanggota.JKelamin, Img: clanggota.Img, CreatedByUserID: uint(key)}
-	jurusan := []string{"S1 - Informatika", "S1 - Sistem Informasi", "S1 - Teknik Komputer", "D3 - Sistem Informasi Akutansi", "D3 - Teknik Komputer", "D3 - Rekayasa Perangkat Lunak"}
-
-	validateJurusan := false
-	for i := range jurusan {
-		if i == clanggota.Jurusan {
-			validateJurusan = true
-		}
-	}
-	if !validateJurusan {
-		return errors.New("jurusan tidak ditemukan")
-	}
 
 	err := c.CARepository.DBRegisterCA(calonAnggota)
 	if err != nil {
@@ -43,17 +32,6 @@ func (c *CAUsecase) RegisterCA(clanggota model.RegCA, key int) error {
 func (c *CAUsecase) UpdateCA(clanggota model.RegCA, idCa, key int) error {
 
 	calonAnggota := model.CA{Nama: clanggota.Nama, Email: clanggota.Email, Nim: clanggota.Nim, Jurusan: clanggota.Jurusan, Angkatan: clanggota.Angkatan, NoTlp: clanggota.NoTlp, Fakultas: clanggota.Fakultas, JKelamin: clanggota.JKelamin, Img: clanggota.Img, UpdatedByUserID: uint(key)}
-	jurusan := []string{"S1 - Informatika", "S1 - Sistem Informasi", "S1 - Teknik Komputer", "D3 - Sistem Informasi Akutansi", "D3 - Teknik Komputer", "D3 - Rekayasa Perangkat Lunak"}
-
-	validateJurusan := false
-	for i := range jurusan {
-		if i == clanggota.Jurusan {
-			validateJurusan = true
-		}
-	}
-	if !validateJurusan {
-		return errors.New("jurusan tidak ditemukan")
-	}
 
 	err := c.CARepository.DBUpdateCA(calonAnggota, idCa)
 	if err != nil {
@@ -71,7 +49,7 @@ func (c *CAUsecase) ListCA(offset int, limit int) ([]model.ListCA, error) {
 	fmt.Println(dblistanggota)
 	result := []model.ListCA{}
 	fakultas := []string{"", "Teknologi Informasi", "Bisnis Management Bisnis"}
-	jurusan := []string{"", "D3 - Rekayasa Perangkat Lunak Aplikasi", "D3 - Sistem Informasi Akuntansi", "D3 - Teknologi Komputer", "S1 - Informatika", "S1 - Sistem Informasi", "D3 - Rekayasa Perangkat Lunak", "S1 - Teknik Komputer", "S1 - Bisnis Digital", "S1 - Manajemen Ritel"}
+	jurusan := []string{"", "D3 - Rekayasa Perangkat Lunak Aplikasi", "D3 - Sistem Informasi Akuntansi", "D3 - Teknologi Komputer", "S1 - Informatika", "S1 - Sistem Informasi", "S1 - Teknik Komputer", "S1 - Bisnis Digital", "S1 - Manajemen Ritel"}
 	jenis_kelamin := []string{"", "Laki-laki", "Perempuan"}
 
 	for i, data := range dblistanggota {
