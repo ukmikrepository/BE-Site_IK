@@ -70,7 +70,8 @@ func (ca *CAController) RegisterCA(c *gin.Context) {
 	key := c.MustGet("currentUserId").(int)
 
 	// file image
-	filename := fmt.Sprintf("%s_%s", clanggota.Nim, file.Filename)
+	number := ca.CAUsecase.GenerateID()
+	filename := fmt.Sprintf("%s-%s_%s", number, clanggota.Nim, file.Filename)
 	clanggota.Img = filename
 
 	err = ca.CAUsecase.RegisterCA(clanggota, key)
@@ -166,6 +167,11 @@ func (ca *CAController) UpadateCA(c *gin.Context) {
 		return
 	}
 
+	// image
+	number := ca.CAUsecase.GenerateID()
+	filename := fmt.Sprintf("%s-%s_%s", number, clanggota.Nim, file.Filename)
+	clanggota.Img = filename
+
 	err = ca.CAUsecase.UpdateCA(clanggota, idCa, key)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, model.Response{
@@ -182,7 +188,6 @@ func (ca *CAController) UpadateCA(c *gin.Context) {
 	}
 
 	// Generate a unique filename or use the original filename
-	filename := fmt.Sprintf("%s_%s", clanggota.Nim, file.Filename)
 	if err := c.SaveUploadedFile(file, destination+filename); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
 		return

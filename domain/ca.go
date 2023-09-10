@@ -18,4 +18,5 @@ type CAUsecase interface {
 	TotalCa() (int64, error)
 	DeleteCA(idCa, key int) error
 	ValidateID(int) error
+	GenerateID() string
 }

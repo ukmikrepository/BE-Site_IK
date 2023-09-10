@@ -61,7 +61,7 @@ func (c *CARepository) DBUpdateCA(clanggota model.CA, idCa int) error {
 
 func (c *CARepository) DBListCA(offset int, limit int) ([]model.ListCA, error) {
 	result := []model.ListCA{}
-	err := c.db.Table("cas").Select("id", "img", "nama", "email", "nim", "jurusan", "angkatan", "no_tlp").Where("deleted_at IS NULL").Order("cas.created_at ASC").Offset(offset).Limit(limit).Find(&result).Error
+	err := c.db.Table("cas").Select("id", "img", "nama", "email", "nim", "fakultas", "jurusan", "angkatan", "no_tlp", "j_kelamin").Where("deleted_at IS NULL").Order("cas.created_at ASC").Offset(offset).Limit(limit).Find(&result).Error
 	if err != nil {
 		return []model.ListCA{}, err
 	}
