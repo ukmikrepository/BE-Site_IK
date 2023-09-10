@@ -4,6 +4,9 @@ import (
 	"backend_ukmik/domain"
 	"backend_ukmik/model"
 	"errors"
+	"fmt"
+	"math/rand"
+	"strconv"
 )
 
 type CAUsecase struct {
@@ -64,9 +67,40 @@ func (c *CAUsecase) ListCA(offset int, limit int) ([]model.ListCA, error) {
 	if err != nil {
 		return []model.ListCA{}, err
 	}
+
+	fmt.Println(dblistanggota)
 	result := []model.ListCA{}
+	fakultas := []string{"", "Teknologi Informasi", "Bisnis Management Bisnis"}
+	jurusan := []string{"", "D3 - Rekayasa Perangkat Lunak Aplikasi", "D3 - Sistem Informasi Akuntansi", "D3 - Teknologi Komputer", "S1 - Informatika", "S1 - Sistem Informasi", "D3 - Rekayasa Perangkat Lunak", "S1 - Teknik Komputer", "S1 - Bisnis Digital", "S1 - Manajemen Ritel"}
+	jenis_kelamin := []string{"", "Laki-laki", "Perempuan"}
+
 	for i, data := range dblistanggota {
-		result = append(result, model.ListCA{No: i + 1, Img: data.Img, Nama: data.Nama, Email: data.Email, Nim: data.Nim, Jurusan: data.Jurusan, Angkatan: data.Angkatan, NoTlp: data.NoTlp})
+		// fakultas
+		fakultasStr := ""
+		idfakultas, err := strconv.Atoi(data.Fakultas)
+		if err != nil {
+			return nil, errors.New("convert jurusan failed")
+		}
+		fakultasStr = fakultas[idfakultas]
+
+		// jurusan
+		jurusanStr := ""
+		idjurusan, err := strconv.Atoi(data.Jurusan)
+		if err != nil {
+			return nil, errors.New("convert jurusan failed")
+		}
+		jurusanStr = jurusan[idjurusan]
+
+		// jenis kelamin
+		jenis_kelaminStr := ""
+		idjenis_kelamin, err := strconv.Atoi(data.JKelamin)
+		if err != nil {
+			return nil, errors.New("convert jenis kelamin failed")
+		}
+		jenis_kelaminStr = jenis_kelamin[idjenis_kelamin]
+
+		result = append(result, model.ListCA{No: i + 1, Img: data.Img, Nama: data.Nama, Email: data.Email, Nim: data.Nim, Fakultas: fakultasStr, Jurusan: jurusanStr, Angkatan: data.Angkatan, NoTlp: data.NoTlp, JKelamin: jenis_kelaminStr})
+
 	}
 	return result, nil
 }
@@ -93,4 +127,15 @@ func (c *CAUsecase) ValidateID(key int) error {
 		return err
 	}
 	return nil
+}
+
+func (c *CAUsecase) GenerateID() string {
+	const digits = "0123456789"
+	randomNumber := make([]byte, 10)
+
+	// Mengisi randomNumber dengan karakter acak dari digits
+	for i := 0; i < 10; i++ {
+		randomNumber[i] = digits[rand.Intn(len(digits))]
+	}
+	return string(randomNumber)
 }

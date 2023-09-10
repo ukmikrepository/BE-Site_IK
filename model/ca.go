@@ -36,14 +36,16 @@ type RegCA struct {
 }
 
 type ListCA struct {
-	No       int
-	Img      string
-	Nama     string
-	Email    string
-	Nim      string
-	Jurusan  int
-	Angkatan string
-	NoTlp    string
+	No       int    `json:"no"`
+	Img      string `json:"image"`
+	Nama     string `json:"nama"`
+	Email    string `json:"email"`
+	Nim      string `json:"nim"`
+	Fakultas string `json:"fakultas"`
+	Jurusan  string `json:"jurusan"`
+	Angkatan string `json:"angkatan"`
+	NoTlp    string `json:"no_telpon"`
+	JKelamin string `json:"jenis_kelamin"`
 }
 
 type ResponseListCA struct {
