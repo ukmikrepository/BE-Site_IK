@@ -99,7 +99,7 @@ func (c *CAUsecase) ListCA(offset int, limit int) ([]model.ListCA, error) {
 		}
 		jenis_kelaminStr = jenis_kelamin[idjenis_kelamin]
 
-		result = append(result, model.ListCA{No: i + 1, Img: data.Img, Nama: data.Nama, Email: data.Email, Nim: data.Nim, Fakultas: fakultasStr, Jurusan: jurusanStr, Angkatan: data.Angkatan, NoTlp: data.NoTlp, JKelamin: jenis_kelaminStr})
+		result = append(result, model.ListCA{No: i + 1, Id: data.Id, Img: data.Img, Nama: data.Nama, Email: data.Email, Nim: data.Nim, Fakultas: fakultasStr, Jurusan: jurusanStr, Angkatan: data.Angkatan, NoTlp: data.NoTlp, JKelamin: jenis_kelaminStr})
 
 	}
 	return result, nil
