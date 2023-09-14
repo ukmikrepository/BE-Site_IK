@@ -31,6 +31,7 @@ func NewRouter(userDomain domain.UserRepository, UserController *controller.User
 
 	// authentication
 	router.POST("/login", AuthenticationController.Login)
+	router.GET("/logout", AuthenticationController.Logout)
 
 	// test
 	router.POST("/user", UserController.CreateUser)

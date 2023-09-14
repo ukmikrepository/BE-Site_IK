@@ -40,3 +40,14 @@ func (a *AuthenticationController) Login(c *gin.Context) {
 	result := model.ResLogin{Res: res, Token: token}
 	c.JSON(res.StatusCode, result)
 }
+
+func (a *AuthenticationController) Logout(c *gin.Context) {
+	// Di sini Anda dapat mengimplementasikan logika logout sesuai dengan kebutuhan Anda,
+	// seperti menghapus token sesi atau tindakan logout lainnya.
+
+	// Contoh sederhana: hanya mengirimkan pesan logout berhasil.
+	c.JSON(http.StatusOK, model.Response{
+		StatusCode: http.StatusOK,
+		Message:    "Logout berhasil",
+	})
+}

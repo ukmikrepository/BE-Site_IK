@@ -93,9 +93,9 @@ func (ca *CAController) RegisterCA(c *gin.Context) {
 
 	file, err := c.FormFile("image")
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, model.Response{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "Image upload is required",
+		c.AbortWithStatusJSON(http.StatusBadRequest, model.Response{
+			StatusCode: http.StatusBadRequest,
+			Message:    "Image tidak boleh kosong",
 		})
 		return
 	}
@@ -174,20 +174,20 @@ func (ca *CAController) UpadateCA(c *gin.Context) {
 		return
 	}
 
-	if len(clanggota.Nama) == 0 || len(clanggota.Email) == 0 || len(clanggota.Nim) == 0 || clanggota.Jurusan == 0 || len(clanggota.Angkatan) == 0 || len(clanggota.NoTlp) == 0 || clanggota.Fakultas == 0 || clanggota.JKelamin == 0 {
+	if (len(clanggota.Nama) == 0 || clanggota.Nama == "" || clanggota.Nama == " ") || (len(clanggota.Email) == 0 || clanggota.Email == "" || clanggota.Email == " ") || (len(clanggota.Nim) == 0 || clanggota.Nama == "" || clanggota.Nim == " ") || clanggota.Jurusan == 0 || (len(clanggota.Angkatan) == 0 || clanggota.Angkatan == "" || clanggota.Angkatan == " ") || (len(clanggota.NoTlp) == 0 || clanggota.NoTlp == "" || clanggota.NoTlp == " ") || clanggota.Fakultas == 0 || clanggota.JKelamin == 0 {
 		var errorMessage string
 
-		if len(clanggota.Nama) == 0 {
+		if len(clanggota.Nama) == 0 || clanggota.Nama == "" || clanggota.Nama == " " {
 			errorMessage = "Nama tidak boleh kosong"
-		} else if len(clanggota.Email) == 0 {
+		} else if len(clanggota.Email) == 0 || clanggota.Email == "" || clanggota.Email == " " {
 			errorMessage = "Email tidak boleh kosong"
-		} else if len(clanggota.Nim) == 0 {
+		} else if len(clanggota.Nim) == 0 || clanggota.Nim == "" || clanggota.Nim == " " {
 			errorMessage = "Nim tidak boleh kosong"
 		} else if clanggota.Jurusan == 0 {
 			errorMessage = "Jurusan tidak boleh kosong"
-		} else if len(clanggota.Angkatan) == 0 {
+		} else if len(clanggota.Angkatan) == 0 || clanggota.Angkatan == "" || clanggota.Angkatan == " " {
 			errorMessage = "Angkatan tidak boleh kosong"
-		} else if len(clanggota.NoTlp) == 0 {
+		} else if len(clanggota.NoTlp) == 0 || clanggota.NoTlp == "" || clanggota.NoTlp == " " {
 			errorMessage = "Nomor Telepon tidak kosong"
 		} else if clanggota.Fakultas == 0 {
 			errorMessage = "Fakultas tidak boleh kosong"
@@ -206,9 +206,9 @@ func (ca *CAController) UpadateCA(c *gin.Context) {
 
 	file, err := c.FormFile("image")
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, model.Response{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "Image upload is required",
+		c.AbortWithStatusJSON(http.StatusBadRequest, model.Response{
+			StatusCode: http.StatusBadRequest,
+			Message:    "Image tidak boleh kosong",
 		})
 		return
 	}
