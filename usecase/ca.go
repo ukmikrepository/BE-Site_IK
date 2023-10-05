@@ -52,6 +52,7 @@ func (c *CAUsecase) ListCA(offset int, limit int) ([]model.ListCA, error) {
 	fakultas := []string{"", "Teknologi Informasi", "Bisnis Management Bisnis"}
 	jurusan := []string{"", "D3 - Rekayasa Perangkat Lunak Aplikasi", "D3 - Sistem Informasi Akuntansi", "D3 - Teknologi Komputer", "S1 - Informatika", "S1 - Sistem Informasi", "S1 - Teknik Komputer", "S1 - Bisnis Digital", "S1 - Manajemen Ritel"}
 	jenis_kelamin := []string{"", "Laki-laki", "Perempuan"}
+	status_pembayaran := []string{"Belum Lunas", "Lunas"}
 
 	for i, data := range dblistanggota {
 		// fakultas
@@ -80,11 +81,12 @@ func (c *CAUsecase) ListCA(offset int, limit int) ([]model.ListCA, error) {
 
 		// status pembayaran
 		status_pembayaranStr := ""
-		if data.StatusFee == "0" {
-			status_pembayaranStr = "Belum Lunas"
-		} else {
-			status_pembayaranStr = "Lunas"
+		fmt.Println(data.StatusFee)
+		idstatus_pembayaran, err := strconv.Atoi(data.StatusFee)
+		if err != nil {
+			return nil, errors.New("convert status pembayaran failed")
 		}
+		status_pembayaranStr = status_pembayaran[idstatus_pembayaran]
 
 		result = append(result, model.ListCA{No: i + 1, Id: data.Id, Img: data.Img, Nama: data.Nama, Email: data.Email, Nim: data.Nim, Fakultas: fakultasStr, Jurusan: jurusanStr, Angkatan: data.Angkatan, NoTlp: data.NoTlp, JKelamin: jenis_kelaminStr, StatusFee: status_pembayaranStr})
 
@@ -102,6 +104,7 @@ func (c *CAUsecase) ListAllCA() ([]model.ListCA, error) {
 	fakultas := []string{"", "Teknologi Informasi", "Bisnis Management Bisnis"}
 	jurusan := []string{"", "D3 - Rekayasa Perangkat Lunak Aplikasi", "D3 - Sistem Informasi Akuntansi", "D3 - Teknologi Komputer", "S1 - Informatika", "S1 - Sistem Informasi", "S1 - Teknik Komputer", "S1 - Bisnis Digital", "S1 - Manajemen Ritel"}
 	jenis_kelamin := []string{"", "Laki-laki", "Perempuan"}
+	status_pembayaran := []string{"Belum Lunas", "Lunas"}
 
 	for i, data := range dblistanggota {
 		// fakultas
@@ -130,11 +133,12 @@ func (c *CAUsecase) ListAllCA() ([]model.ListCA, error) {
 
 		// status pembayaran
 		status_pembayaranStr := ""
-		if data.StatusFee == "0" {
-			status_pembayaranStr = "Belum Lunas"
-		} else {
-			status_pembayaranStr = "Lunas"
+		fmt.Println(data.StatusFee)
+		idstatus_pembayaran, err := strconv.Atoi(data.StatusFee)
+		if err != nil {
+			return nil, errors.New("convert status pembayaran failed")
 		}
+		status_pembayaranStr = status_pembayaran[idstatus_pembayaran]
 
 		result = append(result, model.ListCA{No: i + 1, Id: data.Id, Img: data.Img, Nama: data.Nama, Email: data.Email, Nim: data.Nim, Fakultas: fakultasStr, Jurusan: jurusanStr, Angkatan: data.Angkatan, NoTlp: data.NoTlp, JKelamin: jenis_kelaminStr, StatusFee: status_pembayaranStr})
 
