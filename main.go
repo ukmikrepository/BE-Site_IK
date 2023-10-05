@@ -24,7 +24,7 @@ func main() {
 	// Database
 	db := database.ConnectionDB(&loadConfig)
 
-	errMigrate := db.AutoMigrate(model.User{}, model.CA{})
+	errMigrate := db.AutoMigrate(model.User{}, model.Member{}, model.CA{})
 	if err != nil {
 		log.Fatal("🚀 Could not DB Migrate", errMigrate)
 	}
@@ -37,6 +37,10 @@ func startServer(db *gorm.DB) {
 	AuthenticationUseCase := usecase.NewAuthenticationUsecase(AuthenticationRepo)
 	AuthenticationController := controller.NewAuthenticationController(AuthenticationUseCase)
 
+	DashboardRepo := repository.NewDashboardepository(db)
+	DashboardUseCase := usecase.NewDashboardUsecase(DashboardRepo)
+	DashboardController := controller.NewDashboardController(DashboardUseCase)
+
 	UserRepo := repository.NewUserRepository(db)
 	UserUseCase := usecase.NewUserUsecase(UserRepo)
 	UserController := controller.NewUserController(UserUseCase)
@@ -45,7 +49,7 @@ func startServer(db *gorm.DB) {
 	CAUseCase := usecase.NewCAUsecase(CARepo)
 	CAController := controller.NewCAController(CAUseCase)
 
-	routes := router.NewRouter(UserRepo, UserController, AuthenticationController, CAController)
+	routes := router.NewRouter(UserRepo, DashboardController, UserController, AuthenticationController, CAController)
 
 	server := &http.Server{
 		Addr:           ":3400",

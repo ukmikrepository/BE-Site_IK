@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewRouter(userDomain domain.UserRepository, UserController *controller.UserController, AuthenticationController *controller.AuthenticationController, CAController *controller.CAController) *gin.Engine {
+func NewRouter(userDomain domain.UserRepository, DashboardController *controller.DashboardController, UserController *controller.UserController, AuthenticationController *controller.AuthenticationController, CAController *controller.CAController) *gin.Engine {
 	service := gin.Default()
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"http://localhost:3000", "http://10.0.26.57:3000", "*"}
@@ -33,8 +33,11 @@ func NewRouter(userDomain domain.UserRepository, UserController *controller.User
 	router.POST("/login", AuthenticationController.Login)
 	router.GET("/logout", AuthenticationController.Logout)
 
+	// Dashboard
+	router.GET("/dashboard", middleware.DeserializeAdminRole(userDomain), DashboardController.Dashboard)
+
 	// test
-	router.POST("/user", UserController.CreateUser)
+	router.POST("/user", middleware.DeserializeAdminRole(userDomain), UserController.CreateUser)
 
 	// pendaftaran calon anggota
 	router.POST("/ca", CAController.RegisterCA)
@@ -42,6 +45,7 @@ func NewRouter(userDomain domain.UserRepository, UserController *controller.User
 	router.GET("/ca/:offset/:limit", middleware.DeserializeAdminRole(userDomain), CAController.ListCA)
 	router.DELETE("/ca/:id", middleware.DeserializeAdminRole(userDomain), CAController.DeleteCA)
 	router.GET("/ca-image/:img", CAController.ImageCa)
+	router.GET("/download", middleware.DeserializeAdminRole(userDomain), CAController.DownloadCA)
 
 	return service
 }
