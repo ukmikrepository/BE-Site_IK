@@ -45,6 +45,7 @@ func NewRouter(userDomain domain.UserRepository, DashboardController *controller
 	router.GET("/ca/:offset/:limit", middleware.DeserializeAdminRole(userDomain), CAController.ListCA)
 	router.DELETE("/ca/:id", middleware.DeserializeAdminRole(userDomain), CAController.DeleteCA)
 	router.GET("/ca-image/:img", CAController.ImageCa)
+	router.GET("/download", middleware.DeserializeAdminRole(userDomain), CAController.DownloadCA)
 
 	return service
 }

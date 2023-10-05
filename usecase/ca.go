@@ -30,9 +30,11 @@ func (c *CAUsecase) RegisterCA(clanggota model.RegCA, key int) error {
 }
 
 func (c *CAUsecase) UpdateCA(clanggota model.RegCA, idCa, key int) error {
+	fmt.Println(clanggota.StatusFee)
 
-	calonAnggota := model.CA{Nama: clanggota.Nama, Email: clanggota.Email, Nim: clanggota.Nim, Jurusan: clanggota.Jurusan, Angkatan: clanggota.Angkatan, NoTlp: clanggota.NoTlp, Fakultas: clanggota.Fakultas, JKelamin: clanggota.JKelamin, Img: clanggota.Img, UpdatedByUserID: uint(key)}
+	calonAnggota := model.CA{Nama: clanggota.Nama, Email: clanggota.Email, Nim: clanggota.Nim, Jurusan: clanggota.Jurusan, Angkatan: clanggota.Angkatan, NoTlp: clanggota.NoTlp, Fakultas: clanggota.Fakultas, JKelamin: clanggota.JKelamin, Img: clanggota.Img, UpdatedByUserID: uint(key), StatusFee: clanggota.StatusFee}
 
+	fmt.Println(calonAnggota.StatusFee)
 	err := c.CARepository.DBUpdateCA(calonAnggota, idCa)
 	if err != nil {
 		return err
@@ -46,7 +48,6 @@ func (c *CAUsecase) ListCA(offset int, limit int) ([]model.ListCA, error) {
 		return []model.ListCA{}, err
 	}
 
-	fmt.Println(dblistanggota)
 	result := []model.ListCA{}
 	fakultas := []string{"", "Teknologi Informasi", "Bisnis Management Bisnis"}
 	jurusan := []string{"", "D3 - Rekayasa Perangkat Lunak Aplikasi", "D3 - Sistem Informasi Akuntansi", "D3 - Teknologi Komputer", "S1 - Informatika", "S1 - Sistem Informasi", "S1 - Teknik Komputer", "S1 - Bisnis Digital", "S1 - Manajemen Ritel"}
@@ -77,7 +78,65 @@ func (c *CAUsecase) ListCA(offset int, limit int) ([]model.ListCA, error) {
 		}
 		jenis_kelaminStr = jenis_kelamin[idjenis_kelamin]
 
-		result = append(result, model.ListCA{No: i + 1, Id: data.Id, Img: data.Img, Nama: data.Nama, Email: data.Email, Nim: data.Nim, Fakultas: fakultasStr, Jurusan: jurusanStr, Angkatan: data.Angkatan, NoTlp: data.NoTlp, JKelamin: jenis_kelaminStr})
+		// status pembayaran
+		status_pembayaranStr := ""
+		if data.StatusFee == "0" {
+			status_pembayaranStr = "Belum Lunas"
+		} else {
+			status_pembayaranStr = "Lunas"
+		}
+
+		result = append(result, model.ListCA{No: i + 1, Id: data.Id, Img: data.Img, Nama: data.Nama, Email: data.Email, Nim: data.Nim, Fakultas: fakultasStr, Jurusan: jurusanStr, Angkatan: data.Angkatan, NoTlp: data.NoTlp, JKelamin: jenis_kelaminStr, StatusFee: status_pembayaranStr})
+
+	}
+	return result, nil
+}
+
+func (c *CAUsecase) ListAllCA() ([]model.ListCA, error) {
+	dblistanggota, err := c.CARepository.DBListAllCA()
+	if err != nil {
+		return []model.ListCA{}, err
+	}
+
+	result := []model.ListCA{}
+	fakultas := []string{"", "Teknologi Informasi", "Bisnis Management Bisnis"}
+	jurusan := []string{"", "D3 - Rekayasa Perangkat Lunak Aplikasi", "D3 - Sistem Informasi Akuntansi", "D3 - Teknologi Komputer", "S1 - Informatika", "S1 - Sistem Informasi", "S1 - Teknik Komputer", "S1 - Bisnis Digital", "S1 - Manajemen Ritel"}
+	jenis_kelamin := []string{"", "Laki-laki", "Perempuan"}
+
+	for i, data := range dblistanggota {
+		// fakultas
+		fakultasStr := ""
+		idfakultas, err := strconv.Atoi(data.Fakultas)
+		if err != nil {
+			return nil, errors.New("convert jurusan failed")
+		}
+		fakultasStr = fakultas[idfakultas]
+
+		// jurusan
+		jurusanStr := ""
+		idjurusan, err := strconv.Atoi(data.Jurusan)
+		if err != nil {
+			return nil, errors.New("convert jurusan failed")
+		}
+		jurusanStr = jurusan[idjurusan]
+
+		// jenis kelamin
+		jenis_kelaminStr := ""
+		idjenis_kelamin, err := strconv.Atoi(data.JKelamin)
+		if err != nil {
+			return nil, errors.New("convert jenis kelamin failed")
+		}
+		jenis_kelaminStr = jenis_kelamin[idjenis_kelamin]
+
+		// status pembayaran
+		status_pembayaranStr := ""
+		if data.StatusFee == "0" {
+			status_pembayaranStr = "Belum Lunas"
+		} else {
+			status_pembayaranStr = "Lunas"
+		}
+
+		result = append(result, model.ListCA{No: i + 1, Id: data.Id, Img: data.Img, Nama: data.Nama, Email: data.Email, Nim: data.Nim, Fakultas: fakultasStr, Jurusan: jurusanStr, Angkatan: data.Angkatan, NoTlp: data.NoTlp, JKelamin: jenis_kelaminStr, StatusFee: status_pembayaranStr})
 
 	}
 	return result, nil
@@ -88,6 +147,7 @@ func (c *CAUsecase) DeleteCA(idCa, key int) error {
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
