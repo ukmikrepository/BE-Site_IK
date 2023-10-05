@@ -3,6 +3,8 @@ package controller
 import (
 	"backend_ukmik/domain"
 	"backend_ukmik/model"
+	"bytes"
+	"encoding/csv"
 	"fmt"
 	"io"
 	"net/http"
@@ -144,7 +146,7 @@ func (ca *CAController) UpadateCA(c *gin.Context) {
 		return
 	}
 
-	if len(clanggota.Nama) >= 50 || len(clanggota.Email) >= 50 || len(clanggota.Nim) >= 11 || clanggota.Jurusan >= 9 || len(clanggota.Angkatan) >= 5 || len(clanggota.NoTlp) >= 15 || clanggota.Fakultas >= 3 || clanggota.JKelamin >= 3 {
+	if len(clanggota.Nama) >= 50 || len(clanggota.Email) >= 50 || len(clanggota.Nim) >= 11 || (clanggota.Jurusan < 0 || clanggota.Jurusan >= 9) || len(clanggota.Angkatan) >= 5 || len(clanggota.NoTlp) >= 15 || (clanggota.Fakultas < 0 || clanggota.Fakultas >= 3) || (clanggota.JKelamin < 0 || clanggota.JKelamin > 3) || (clanggota.StatusFee < 0 || clanggota.StatusFee > 1) {
 		var errorMessage string
 
 		if len(clanggota.Nama) >= 50 {
@@ -153,16 +155,18 @@ func (ca *CAController) UpadateCA(c *gin.Context) {
 			errorMessage = "Email tidak boleh lebih dari 50 karakter"
 		} else if len(clanggota.Nim) >= 11 {
 			errorMessage = "Nim tidak boleh lebih dari 11 karakter"
-		} else if clanggota.Jurusan >= 9 {
+		} else if clanggota.Jurusan < 0 || clanggota.Jurusan >= 9 {
 			errorMessage = "Jurusan tidak boleh lebih dari 9"
 		} else if len(clanggota.Angkatan) >= 5 {
 			errorMessage = "Angkatan tidak boleh lebih dari 5 karakter"
 		} else if len(clanggota.NoTlp) >= 15 {
 			errorMessage = "Nomor Telepon tidak boleh lebih dari 15 karakter"
-		} else if clanggota.Fakultas >= 3 {
+		} else if clanggota.Fakultas < 0 || clanggota.Fakultas >= 3 {
 			errorMessage = "Fakultas tidak boleh lebih dari 3"
-		} else if clanggota.JKelamin >= 3 {
+		} else if clanggota.JKelamin < 0 || clanggota.JKelamin > 3 {
 			errorMessage = "Jenis Kelamin tidak boleh lebih dari 3"
+		} else if clanggota.StatusFee < 0 || clanggota.StatusFee > 1 {
+			errorMessage = "Status Pembayaran tidak sesuai"
 		} else {
 			errorMessage = ""
 		}
@@ -344,6 +348,38 @@ func (ca *CAController) DeleteCA(c *gin.Context) {
 	result := model.Response{StatusCode: http.StatusOK, Message: "Delete Calon Anggota Success"}
 
 	c.JSON(http.StatusOK, result)
+}
+
+func (ca *CAController) DownloadCA(c *gin.Context) {
+	dataCA, err := ca.CAUsecase.ListAllCA()
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, model.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    err.Error(),
+		})
+		return
+	}
+
+	csvBuffer := &bytes.Buffer{}
+	csvWriter := csv.NewWriter(csvBuffer)
+
+	// Write CSV header
+	header := []string{"No", "Image", "Nama", "Email", "NIM", "Fakultas", "Jurusan", "Angkatan", "No Telp", "Jenis Kelamin", "Status Pembayaran"}
+	csvWriter.Write(header)
+
+	// Write CSV data
+	for i, ca := range dataCA {
+		record := []string{fmt.Sprintf("%d", i+1), "https://ukmik.utdi.ac.id/ca-image/" + ca.Img, ca.Nama, ca.Email, ca.Nim, ca.Fakultas, ca.Jurusan, ca.Angkatan, ca.NoTlp, ca.JKelamin, ca.StatusFee}
+		csvWriter.Write(record)
+	}
+
+	csvWriter.Flush()
+
+	c.Header("Content-Type", "text/csv")
+	c.Header("Content-Disposition", "attachment;filename=CA List.csv")
+
+	c.Writer.Write(csvBuffer.Bytes())
+	c.JSON(http.StatusOK, dataCA)
 }
 
 func (ca *CAController) ImageCa(c *gin.Context) {

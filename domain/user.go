@@ -8,5 +8,6 @@ type UserRepository interface {
 }
 
 type UserUsecase interface {
-	CreateUser(user model.JSONUser) error
+	CreateUser(user model.JSONUser, key int) error
+	GenerateID() string
 }
