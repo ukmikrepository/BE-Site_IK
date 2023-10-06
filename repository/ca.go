@@ -43,7 +43,7 @@ func (c *CARepository) DBRegisterCA(clanggota model.CA) error {
 
 func (c *CARepository) DBGetCAByID(id int) (model.ListCA, error) {
 	result := model.ListCA{}
-	err := c.db.Table("cas").Select("id", "img", "nama", "email", "nim", "fakultas", "jurusan", "angkatan", "no_tlp", "j_kelamin", "status_fee").Where("deleted_at IS NULL").Order("cas.created_at ASC").Find(&result).Error
+	err := c.db.Table("cas").Select("id", "img", "nama", "email", "nim", "fakultas", "jurusan", "angkatan", "no_tlp", "j_kelamin", "status_fee").Where("id = ?", id).Where("deleted_at IS NULL").Find(&result).Error
 	if err != nil {
 		return model.ListCA{}, err
 	}
@@ -51,6 +51,7 @@ func (c *CARepository) DBGetCAByID(id int) (model.ListCA, error) {
 }
 
 func (c *CARepository) DBUpdateCA(clanggota model.CA, idCa int) error {
+	fmt.Println(clanggota)
 	result := &model.CA{}
 	err := c.db.Where("nim = ? AND id != ? ", clanggota.Nim, idCa).Where("deleted_at IS NULL").First(&result).Error
 	if err == nil {
@@ -58,6 +59,7 @@ func (c *CARepository) DBUpdateCA(clanggota model.CA, idCa int) error {
 		return errors.New("nim is already exist")
 	} else if errors.Is(err, gorm.ErrRecordNotFound) {
 		// Data tidak ditemukan, simpan data baru
+		fmt.Println("ini jalan")
 		err := c.db.Where("id = ?", idCa).Updates(&clanggota).Error
 		if err != nil {
 			return errors.New("failed to update calon anggota")
