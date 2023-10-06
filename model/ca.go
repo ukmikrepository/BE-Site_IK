@@ -51,7 +51,7 @@ type ListCA struct {
 	Angkatan  string `json:"angkatan"`
 	NoTlp     string `json:"no_telpon"`
 	JKelamin  string `json:"jenis_kelamin"`
-	StatusFee string `json:"status_fee"`
+	StatusFee int    `json:"status_fee"`
 }
 
 type CSVCA struct {

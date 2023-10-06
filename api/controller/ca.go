@@ -178,43 +178,49 @@ func (ca *CAController) UpadateCA(c *gin.Context) {
 		return
 	}
 
-	if (len(clanggota.Nama) == 0 || clanggota.Nama == "" || clanggota.Nama == " ") || (len(clanggota.Email) == 0 || clanggota.Email == "" || clanggota.Email == " ") || (len(clanggota.Nim) == 0 || clanggota.Nama == "" || clanggota.Nim == " ") || clanggota.Jurusan == 0 || (len(clanggota.Angkatan) == 0 || clanggota.Angkatan == "" || clanggota.Angkatan == " ") || (len(clanggota.NoTlp) == 0 || clanggota.NoTlp == "" || clanggota.NoTlp == " ") || clanggota.Fakultas == 0 || clanggota.JKelamin == 0 {
-		var errorMessage string
+	// if (len(clanggota.Nama) == 0 || clanggota.Nama == "" || clanggota.Nama == " ") || (len(clanggota.Email) == 0 || clanggota.Email == "" || clanggota.Email == " ") || (len(clanggota.Nim) == 0 || clanggota.Nama == "" || clanggota.Nim == " ") || clanggota.Jurusan == 0 || (len(clanggota.Angkatan) == 0 || clanggota.Angkatan == "" || clanggota.Angkatan == " ") || (len(clanggota.NoTlp) == 0 || clanggota.NoTlp == "" || clanggota.NoTlp == " ") || clanggota.Fakultas == 0 || clanggota.JKelamin == 0 {
+	// 	var errorMessage string
 
-		if len(clanggota.Nama) == 0 || clanggota.Nama == "" || clanggota.Nama == " " {
-			errorMessage = "Nama tidak boleh kosong"
-		} else if len(clanggota.Email) == 0 || clanggota.Email == "" || clanggota.Email == " " {
-			errorMessage = "Email tidak boleh kosong"
-		} else if len(clanggota.Nim) == 0 || clanggota.Nim == "" || clanggota.Nim == " " {
-			errorMessage = "Nim tidak boleh kosong"
-		} else if clanggota.Jurusan == 0 {
-			errorMessage = "Jurusan tidak boleh kosong"
-		} else if len(clanggota.Angkatan) == 0 || clanggota.Angkatan == "" || clanggota.Angkatan == " " {
-			errorMessage = "Angkatan tidak boleh kosong"
-		} else if len(clanggota.NoTlp) == 0 || clanggota.NoTlp == "" || clanggota.NoTlp == " " {
-			errorMessage = "Nomor Telepon tidak kosong"
-		} else if clanggota.Fakultas == 0 {
-			errorMessage = "Fakultas tidak boleh kosong"
-		} else if clanggota.JKelamin == 0 {
-			errorMessage = "Jenis Kelamin tidak boleh kosong"
-		} else {
-			errorMessage = ""
-		}
+	// 	if len(clanggota.Nama) == 0 || clanggota.Nama == "" || clanggota.Nama == " " {
+	// 		errorMessage = "Nama tidak boleh kosong"
+	// 	} else if len(clanggota.Email) == 0 || clanggota.Email == "" || clanggota.Email == " " {
+	// 		errorMessage = "Email tidak boleh kosong"
+	// 	} else if len(clanggota.Nim) == 0 || clanggota.Nim == "" || clanggota.Nim == " " {
+	// 		errorMessage = "Nim tidak boleh kosong"
+	// 	} else if clanggota.Jurusan == 0 {
+	// 		errorMessage = "Jurusan tidak boleh kosong"
+	// 	} else if len(clanggota.Angkatan) == 0 || clanggota.Angkatan == "" || clanggota.Angkatan == " " {
+	// 		errorMessage = "Angkatan tidak boleh kosong"
+	// 	} else if len(clanggota.NoTlp) == 0 || clanggota.NoTlp == "" || clanggota.NoTlp == " " {
+	// 		errorMessage = "Nomor Telepon tidak kosong"
+	// 	} else if clanggota.Fakultas == 0 {
+	// 		errorMessage = "Fakultas tidak boleh kosong"
+	// 	} else if clanggota.JKelamin == 0 {
+	// 		errorMessage = "Jenis Kelamin tidak boleh kosong"
+	// 	} else {
+	// 		errorMessage = ""
+	// 	}
 
-		c.AbortWithStatusJSON(http.StatusBadRequest, model.Response{
-			StatusCode: http.StatusBadRequest,
-			Message:    errorMessage,
-		})
-		return
-	}
+	// 	c.AbortWithStatusJSON(http.StatusBadRequest, model.Response{
+	// 		StatusCode: http.StatusBadRequest,
+	// 		Message:    errorMessage,
+	// 	})
+	// 	return
+	// }
+
+	validateImg := false
 
 	file, err := c.FormFile("image")
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, model.Response{
-			StatusCode: http.StatusBadRequest,
-			Message:    "Image tidak boleh kosong",
-		})
-		return
+		if err != http.ErrMissingFile {
+			c.AbortWithStatusJSON(http.StatusBadRequest, model.Response{
+				StatusCode: http.StatusBadRequest,
+				Message:    "Image tidak boleh kosong",
+			})
+			return
+		} else {
+			validateImg = true
+		}
 	}
 
 	idCAParam := c.Param("id")
@@ -240,9 +246,46 @@ func (ca *CAController) UpadateCA(c *gin.Context) {
 	}
 
 	// image
-	number := ca.CAUsecase.GenerateID()
-	filename := fmt.Sprintf("%s-%s_%s", number, clanggota.Nim, file.Filename)
-	clanggota.Img = filename
+	if !validateImg {
+		imgNim, err := ca.CAUsecase.GetCAByID(idCa)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusInternalServerError, model.Response{
+				StatusCode: http.StatusInternalServerError,
+				Message:    err.Error(),
+			})
+			return
+		}
+		if clanggota.Nim == "" {
+			clanggota.Img = imgNim.Img
+			clanggota.Nim = imgNim.Nim
+		} else {
+			clanggota.Img = imgNim.Img
+		}
+
+		destination := "uploads/image/ca/2023/"
+
+		// hapus image
+		if err := os.Remove(destination + clanggota.Img); err != nil {
+			// Jika terjadi kesalahan saat menghapus file
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete file"})
+			return
+		}
+
+		number := ca.CAUsecase.GenerateID()
+		filename := fmt.Sprintf("%s-%s_%s", number, clanggota.Nim, file.Filename)
+		clanggota.Img = filename
+
+		if err := os.MkdirAll(destination, os.ModePerm); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to create upload directory"})
+			return
+		}
+
+		// Generate a unique filename or use the original filename
+		if err := c.SaveUploadedFile(file, destination+filename); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+			return
+		}
+	}
 
 	err = ca.CAUsecase.UpdateCA(clanggota, idCa, key)
 	if err != nil {
@@ -250,18 +293,6 @@ func (ca *CAController) UpadateCA(c *gin.Context) {
 			StatusCode: http.StatusInternalServerError,
 			Message:    err.Error(),
 		})
-		return
-	}
-
-	destination := "uploads/image/ca/2023/"
-	if err := os.MkdirAll(destination, os.ModePerm); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to create upload directory"})
-		return
-	}
-
-	// Generate a unique filename or use the original filename
-	if err := c.SaveUploadedFile(file, destination+filename); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
 		return
 	}
 
