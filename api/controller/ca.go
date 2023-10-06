@@ -146,7 +146,7 @@ func (ca *CAController) UpadateCA(c *gin.Context) {
 		return
 	}
 
-	if len(clanggota.Nama) >= 50 || len(clanggota.Email) >= 50 || len(clanggota.Nim) >= 11 || (clanggota.Jurusan < 0 || clanggota.Jurusan >= 9) || len(clanggota.Angkatan) >= 5 || len(clanggota.NoTlp) >= 15 || (clanggota.Fakultas < 0 || clanggota.Fakultas >= 3) || (clanggota.JKelamin < 0 || clanggota.JKelamin > 3) || (clanggota.StatusFee < 0 || clanggota.StatusFee > 1) {
+	if len(clanggota.Nama) >= 50 || len(clanggota.Email) >= 50 || len(clanggota.Nim) >= 11 || (clanggota.Jurusan < 0 || clanggota.Jurusan >= 9) || len(clanggota.Angkatan) >= 5 || len(clanggota.NoTlp) >= 15 || (clanggota.Fakultas < 0 || clanggota.Fakultas >= 3) || (clanggota.JKelamin < 0 || clanggota.JKelamin > 3) || (clanggota.StatusFee < 0 || clanggota.StatusFee > 2) {
 		var errorMessage string
 
 		if len(clanggota.Nama) >= 50 {
@@ -165,7 +165,7 @@ func (ca *CAController) UpadateCA(c *gin.Context) {
 			errorMessage = "Fakultas tidak boleh lebih dari 3"
 		} else if clanggota.JKelamin < 0 || clanggota.JKelamin > 3 {
 			errorMessage = "Jenis Kelamin tidak boleh lebih dari 3"
-		} else if clanggota.StatusFee < 0 || clanggota.StatusFee > 1 {
+		} else if clanggota.StatusFee < 0 || clanggota.StatusFee > 2 {
 			errorMessage = "Status Pembayaran tidak sesuai"
 		} else {
 			errorMessage = ""
@@ -177,36 +177,6 @@ func (ca *CAController) UpadateCA(c *gin.Context) {
 		})
 		return
 	}
-
-	// if (len(clanggota.Nama) == 0 || clanggota.Nama == "" || clanggota.Nama == " ") || (len(clanggota.Email) == 0 || clanggota.Email == "" || clanggota.Email == " ") || (len(clanggota.Nim) == 0 || clanggota.Nama == "" || clanggota.Nim == " ") || clanggota.Jurusan == 0 || (len(clanggota.Angkatan) == 0 || clanggota.Angkatan == "" || clanggota.Angkatan == " ") || (len(clanggota.NoTlp) == 0 || clanggota.NoTlp == "" || clanggota.NoTlp == " ") || clanggota.Fakultas == 0 || clanggota.JKelamin == 0 {
-	// 	var errorMessage string
-
-	// 	if len(clanggota.Nama) == 0 || clanggota.Nama == "" || clanggota.Nama == " " {
-	// 		errorMessage = "Nama tidak boleh kosong"
-	// 	} else if len(clanggota.Email) == 0 || clanggota.Email == "" || clanggota.Email == " " {
-	// 		errorMessage = "Email tidak boleh kosong"
-	// 	} else if len(clanggota.Nim) == 0 || clanggota.Nim == "" || clanggota.Nim == " " {
-	// 		errorMessage = "Nim tidak boleh kosong"
-	// 	} else if clanggota.Jurusan == 0 {
-	// 		errorMessage = "Jurusan tidak boleh kosong"
-	// 	} else if len(clanggota.Angkatan) == 0 || clanggota.Angkatan == "" || clanggota.Angkatan == " " {
-	// 		errorMessage = "Angkatan tidak boleh kosong"
-	// 	} else if len(clanggota.NoTlp) == 0 || clanggota.NoTlp == "" || clanggota.NoTlp == " " {
-	// 		errorMessage = "Nomor Telepon tidak kosong"
-	// 	} else if clanggota.Fakultas == 0 {
-	// 		errorMessage = "Fakultas tidak boleh kosong"
-	// 	} else if clanggota.JKelamin == 0 {
-	// 		errorMessage = "Jenis Kelamin tidak boleh kosong"
-	// 	} else {
-	// 		errorMessage = ""
-	// 	}
-
-	// 	c.AbortWithStatusJSON(http.StatusBadRequest, model.Response{
-	// 		StatusCode: http.StatusBadRequest,
-	// 		Message:    errorMessage,
-	// 	})
-	// 	return
-	// }
 
 	validateImg := false
 
@@ -293,6 +263,8 @@ func (ca *CAController) UpadateCA(c *gin.Context) {
 			return
 		}
 	}
+
+	fmt.Println(clanggota.StatusFee)
 
 	err = ca.CAUsecase.UpdateCA(clanggota, idCa, key)
 	if err != nil {

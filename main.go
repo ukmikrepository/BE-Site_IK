@@ -24,7 +24,7 @@ func main() {
 	// Database
 	db := database.ConnectionDB(&loadConfig)
 
-	errMigrate := db.AutoMigrate(model.User{}, model.Member{}, model.CA{})
+	errMigrate := db.AutoMigrate(model.User{}, model.CA{})
 	if err != nil {
 		log.Fatal("🚀 Could not DB Migrate", errMigrate)
 	}

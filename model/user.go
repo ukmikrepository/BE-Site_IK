@@ -19,12 +19,6 @@ type User struct {
 	DeletedByUser uint `gorm:"type:integer;default:null"`
 }
 
-type Member struct {
-	ID     int `gorm:"type:integer;primary_key"`
-	UserID int // Ini adalah field untuk menyimpan ID user yang terkait dengan member ini
-	// Tambahkan field lain yang relevan untuk Member di sini
-}
-
 type JSONUser struct {
 	Name     string `form:"name"`
 	Username string `form:"username"`
