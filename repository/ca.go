@@ -41,9 +41,18 @@ func (c *CARepository) DBRegisterCA(clanggota model.CA) error {
 	return nil
 }
 
+func (c *CARepository) DBGetCAByID(id int) (model.ListCA, error) {
+	result := model.ListCA{}
+	err := c.db.Table("cas").Select("id", "img", "nama", "email", "nim", "fakultas", "jurusan", "angkatan", "no_tlp", "j_kelamin", "status_fee").Where("deleted_at IS NULL").Order("cas.created_at ASC").Find(&result).Error
+	if err != nil {
+		return model.ListCA{}, err
+	}
+	return result, nil
+}
+
 func (c *CARepository) DBUpdateCA(clanggota model.CA, idCa int) error {
 	result := &model.CA{}
-	err := c.db.Where("nim = ? AND id != ? ", clanggota.Nim, idCa).Where("deleted_at IS NULL").First(&result).Error
+	err := c.db.Where("id != ? ", idCa).Where("deleted_at IS NULL").First(&result).Error
 	if err == nil {
 		// Data duplikat ditemukan, tangani dengan sesuai
 		return errors.New("nim is already exist")
