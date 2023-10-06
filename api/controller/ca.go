@@ -246,15 +246,22 @@ func (ca *CAController) UpadateCA(c *gin.Context) {
 	}
 
 	// image
+	imgNim, err := ca.CAUsecase.GetCAByID(idCa)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, model.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    err.Error(),
+		})
+		return
+	}
+
+	// validate nim entry
+	if clanggota.Nim == "" {
+		clanggota.Nim = imgNim.Nim
+	}
+
 	if !validateImg {
-		imgNim, err := ca.CAUsecase.GetCAByID(idCa)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusInternalServerError, model.Response{
-				StatusCode: http.StatusInternalServerError,
-				Message:    err.Error(),
-			})
-			return
-		}
+
 		if clanggota.Nim == "" {
 			clanggota.Img = imgNim.Img
 			clanggota.Nim = imgNim.Nim

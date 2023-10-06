@@ -52,7 +52,7 @@ func (c *CARepository) DBGetCAByID(id int) (model.ListCA, error) {
 
 func (c *CARepository) DBUpdateCA(clanggota model.CA, idCa int) error {
 	result := &model.CA{}
-	err := c.db.Where("id != ? ", idCa).Where("deleted_at IS NULL").First(&result).Error
+	err := c.db.Where("nim = ? AND id != ? ", clanggota.Nim, idCa).Where("deleted_at IS NULL").First(&result).Error
 	if err == nil {
 		// Data duplikat ditemukan, tangani dengan sesuai
 		return errors.New("nim is already exist")
